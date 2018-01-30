@@ -4,7 +4,10 @@ precision highp float;
 
 in vec4 vs_Pos;
 
+out vec4 fs_Pos; // passes location for raycasting
+
 void main() {
 	// TODO: Pass relevant info to fragment
+	fs_Pos = vs_Pos;
 	gl_Position = vs_Pos;
 }
