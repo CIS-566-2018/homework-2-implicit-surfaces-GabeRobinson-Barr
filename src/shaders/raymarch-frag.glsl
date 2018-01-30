@@ -19,21 +19,24 @@ float smin(float a, float b, float k) {
 	return mix(b, a, h) - k * h * (1.0 - h);
 }
 
+float totalSDF(vec3 p) { // this is where I am setting up the scene
+	vec3 spherePos = vec3(0, 0, 20); // For now skip transformations and center a sphere at 0, 0, 20
+	p -= spherePos;
+	return sdSphere(p, 5.f); //sphere radius 5
+}
+
 void main() {
 	// TODO: make a Raymarcher!
-	out_Col = vec4(0.0, 0.0, 0.0, 1.0);
+	out_Col = vec4(0.0, 0.0, 0.0, 1.0); // This makes sure if we dont hit anything the color is set to black
 
 	vec3 raydir = normalize(vec3(fs_Pos.x, fs_Pos.y, 1) * 1000.f); // Get the ray direction through this Pixel
-	vec3 position = vec3(0,0,0); // camera origin
+	vec3 position = vec3(0,0,0); // start at camera origin
 
-	vec3 spherePos = vec3(0, 0, 20); // For now skip transformations and center a sphere at 0, 0, 20
-
-	position -= spherePos;
 
 	float t = 0.f;
 	int steps = 0;
 	while(t < 1000.f && steps < 20) { // Cap ray distance at 1000 and steps taken at 20
-		float dist = sdSphere(position, 5.f); //sphere radius 5
+		float dist = totalSDf(position);
 		if (dist < 0.01f) {
 			out_Col = vec4(normalize(position - spherePos), 1.0);
 			break;
