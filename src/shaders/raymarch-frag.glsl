@@ -36,9 +36,9 @@ void main() {
 	float t = 0.f;
 	int steps = 0;
 	while(t < 1000.f && steps < 20) { // Cap ray distance at 1000 and steps taken at 20
-		float dist = totalSDf(position);
+		float dist = totalSDF(position);
 		if (dist < 0.01f) {
-			out_Col = vec4(normalize(position - spherePos), 1.0);
+			out_Col = vec4(normalize(position - vec3(0,0,20)), 1.0); // Temp color function
 			break;
 		}
 		t += dist; // If we didnt hit it yet add dist to the distance gone

@@ -1,0 +1,9 @@
+for camera ray casting, pass in view, eye, and aspect
+
+Colors, return an index from the sdf that you can pass in to a colorize function
+	later to properly get base colors
+
+Normals should be done by subtracting/adding small epsilons to the hit locations
+	and then averaging the difference in location
+
+RayCasting -normalize( Near * forward + (near * aspect * tan(fov/2) * right) + (near * tan(fov/2) * up)
