@@ -266,6 +266,26 @@ void main() {
 		vec3 norm = vec3(totalSDF(position + e.xyy).x - totalSDF(position - e.xyy).x, totalSDF(position + e.yxy).x - totalSDF(position - e.yxy).x, totalSDF(position + e.yyx).x - totalSDF(position - e.yyx).x) / (2.f * e.x);
 		norm = normalize(norm);
 		vec3 lDir = normalize(vec3(1,-1,1));
+		if (sdf.y == 1.0) { // If index is 1.0 raytrace reflection
+			vec3 newdir = normalize(raydir - 2.f * norm * dot(raydir, norm));
+			position += newdir;
+			float newt = 0.f;
+			vec2 newsdf;
+			for(int steps = 0; steps < maxSteps; steps++) { // Cap steps taken
+				newsdf = totalSDF(position);
+				if (newt >= 1000.f || newsdf.x < 0.001) { // Stop conditions
+					break;
+				}
+				newt += newsdf.x; // If we didnt hit it yet add dist to the distance gone
+				position += newdir * newsdf.x; // Add the disance along our ray to get our new position
+			}
+			t = newt;
+			sdf = newsdf;
+			raydir = normalize(position - eye);
+			norm = vec3(totalSDF(position + e.xyy).x - totalSDF(position - e.xyy).x, totalSDF(position + e.yxy).x - totalSDF(position - e.yxy).x, totalSDF(position + e.yyx).x - totalSDF(position - e.yyx).x) / (2.f * e.x);
+
+		}
+
 		if (sdf.y == 4.0) {
 			if (norm.z == 0.0) {
 				out_Col = vec4(baseCol * (abs(fract(u_Time * 0.0002) * 2.0 - 1.0)), 1.0);
@@ -278,7 +298,8 @@ void main() {
 			out_Col = vec4(baseCol * (dot(lDir, -norm) + 0.4), 1.0);
 		}
 	}
-	else {
+
+	if (t >= 1000.0) { // This colors the background
 		raydir.yz = rot(raydir.yz, pi/6.f);
 		if (raydir.y >= 0.1) {
 			out_Col = vec4(raydir.x * 0.5 + 0.5, raydir.y * 0.5 + 0.5, raydir.z, 1.0);
@@ -293,6 +314,4 @@ void main() {
 		}
 	}
 
-
-	//out_Col = vec4(raydir.z, 0,0, 1.0);
 }
