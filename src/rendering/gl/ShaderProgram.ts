@@ -1,4 +1,4 @@
-import {vec4, mat4} from 'gl-matrix';
+import {vec3, vec4, mat4} from 'gl-matrix';
 import Drawable from './Drawable';
 import {gl} from '../../globals';
 
@@ -24,6 +24,9 @@ class ShaderProgram {
   attrPos: number;
 
   unifView: WebGLUniformLocation;
+  unifEye: WebGLUniformLocation;
+  unifInputs: WebGLUniformLocation;
+  unifTime: WebGLUniformLocation;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
@@ -41,12 +44,43 @@ class ShaderProgram {
 
     // TODO: add other attributes here
     this.unifView   = gl.getUniformLocation(this.prog, "u_View");
+    this.unifEye = gl.getUniformLocation(this.prog, "u_Eye");
+    this.unifInputs = gl.getUniformLocation(this.prog, "u_Inputs"); // This holds a vec3 corresponding to (aspect,fov,near)
+    this.unifTime = gl.getUniformLocation(this.prog, "u_Time");
   }
 
   use() {
     if (activeProgram !== this.prog) {
       gl.useProgram(this.prog);
       activeProgram = this.prog;
+    }
+  }
+
+  setView(view: mat4) {
+    this.use();
+    if (this.unifView !== -1) {
+      gl.uniformMatrix4fv(this.unifView, false, view);
+    }
+  }
+
+  setEye(eye: vec3) {
+    this.use();
+    if (this.unifEye !== -1) {
+      gl.uniform3fv(this.unifEye, eye);
+    }
+  }
+
+  setInputs(inp: vec3) {
+    this.use();
+    if (this.unifInputs !== -1) {
+      gl.uniform3fv(this.unifInputs, inp);
+    }
+  }
+
+  setTime(t: number) {
+    this.use();
+    if (this.unifTime !== -1) {
+      gl.uniform1f(this.unifTime, t);
     }
   }
 

@@ -12,6 +12,8 @@ const controls = {
   // TODO: add any controls you want
 };
 
+const startTime = new Date().getTime();
+
 let screenQuad: Square;
 
 function main() {
@@ -66,6 +68,12 @@ function main() {
 
     // TODO: get / calculate relevant uniforms to send to shader here
     // TODO: send uniforms to shader
+    let currTime = new Date().getTime() - startTime;
+
+    raymarchShader.setView(camera.viewMatrix);
+    raymarchShader.setEye(camera.position);
+    raymarchShader.setInputs(vec3.fromValues(camera.aspectRatio, camera.fovy, camera.near));
+    raymarchShader.setTime(currTime);
 
     // March!
     raymarchShader.draw(screenQuad);
