@@ -1,3 +1,13 @@
+Gabe Robinson-Barr Comments about my Ray Marcher
+
+The shapes in the scene have their own SDF functions because I found it easier to organize that way.
+The spheres that roll down the ramp were done with a combination of time mod and domain repetition over a specific interval seen in the ballSDF function. The portal is altered in the x-y plane based on its z position and time.
+
+For colors I had my sdf function return an index to tell the main function what material/color it should be using. The faucet is re-raymarched in the direction of the reflection to get a mirror material. The portal has a base color that is altered based on the z coordinate or by how far the ray marched to reach it. The other objects are just basic lambert shading.
+The background has a rainbow skydome that is colored based on the ray direction to the fragment, then a middle range of just greyscale, and the bottom of the background has a base yellow color that is shaded based on how close to the sdf the ray passes.
+
+
+
 # CIS-566-Project-2
 https://github.com/CIS-566-2018/homework-2-ray-marching-implicit-surfaces
 

@@ -176,7 +176,6 @@ float ballSDF(vec3 p) {
 float portalSDF(vec3 p) {	
 	vec3 q = (p + vec3(0, 50, 300));
 	float t =    sin((q.z * 0.5) + fract(u_Time * 0.0001) * 2.0 * pi);
-	//q = vec3(q.x, q.y, q.z);
 
 	float sph = sdSphere(q, 75.0) + t;
 	float box = udBox(q, vec3(80,80,50));
@@ -214,7 +213,6 @@ vec2 totalSDF(vec3 p) { // this is where I am setting up the scene
 	}
 
 	return vec2(m, colIdx);
-	 //sphere radius 5
 }
 
 vec3 colorize(float index) {
@@ -266,7 +264,8 @@ void main() {
 		vec3 norm = vec3(totalSDF(position + e.xyy).x - totalSDF(position - e.xyy).x, totalSDF(position + e.yxy).x - totalSDF(position - e.yxy).x, totalSDF(position + e.yyx).x - totalSDF(position - e.yyx).x) / (2.f * e.x);
 		norm = normalize(norm);
 		vec3 lDir = normalize(vec3(1,-1,1));
-		if (sdf.y == 1.0) { // If index is 1.0 raytrace reflection
+
+		if (sdf.y == 1.0) { // If index is 1.0 raytrace reflection. Basically a copy of earlier raymarch with new direction/location
 			vec3 newdir = normalize(raydir - 2.f * norm * dot(raydir, norm));
 			position += newdir;
 			float newt = 0.f;
